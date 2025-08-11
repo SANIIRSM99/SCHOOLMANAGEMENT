@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>SCHOOL MANAGEMENT</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>School App</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+  <div id="sidebar" class="sidebar">
+    <button class="hamburger" id="hamburgerToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <h2 id="sidebar-user">School App</h2>
+    <nav>
+      <a href="#" id="nav-dashboard">Dashboard</a>
+      <a href="#" id="nav-admit" class="principal-only">Create Student</a>
+      <a href="#" id="nav-students">Students</a>
+      <a href="#" id="nav-fees" class="principal-only">Fees</a>
+      <a href="#" id="nav-teachers" class="principal-only">Teachers</a>
+      <a href="#" id="nav-teacher" class="teacher-only">Teacher Panel</a>
+      <a href="#" id="nav-classes" class="principal-only">Classes</a>
+      <a href="#" id="nav-subjects" class="principal-only">Subjects</a>
+      <a href="#" id="nav-logout">Logout</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <!-- LOGIN -->
+    <div id="view-login" class="view login-view active">
+      <div class="container small">
+        <h2>School Login</h2>
+        <form id="loginForm">
+          <select id="loginRole">
+            <option value="cpadmin">CP Admin (Principal)</option>
+            <option value="teacher">Teacher</option>
+            <option value="parent">Parent</option>
+          </select>
+          <input id="loginName" type="text" placeholder="Name">
+          <input id="loginId" type="text" placeholder="ID">
+          <button type="submit" id="btnLogin" class="btn">Login</button>
+          <p class="muted">Demo: cpadmin/1111111111111, teacher1/2222222222222, parent1/3333333333333</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard" class="view">
+      <div class="container">
+        <h2 id="dash-welcome">Dashboard</h2>
+        <div class="cards">
+          <div class="card">
+            <h3 id="dashCountStudents">0</h3>Students
+          </div>
+          <div class="card">
+            <h3 id="dashCountTeachers">0</h3>Teachers
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIT STUDENT -->
+    <div id="view-admit" class="view principal-only">
+      <div class="container">
+        <h2>Admission — Create Student</h2>
+        <form id="admitForm">
+          <div class="two-col">
+            <div>
+              <label>Student Name *</label>
+              <input id="studentName" type="text" required>
+            </div>
+            <div>
+              <label>Father Name *</label>
+              <input id="fatherName" type="text" required>
+            </div>
+            <div>
+              <label>Father CNIC *</label>
+              <input id="fatherCNIC" type="text" required>
+            </div>
+            <div>
+              <label>Class/Section *</label>
+              <select id="studentClassSection" required>
+                <option value="">Select Class/Section</option>
+              </select>
+            </div>
+            <div>
+              <label>Previous School</label>
+              <input id="previousSchool" type="text">
+            </div>
+            <div>
+              <label>Address</label>
+              <input id="address" type="text">
+            </div>
+            <div>
+              <label>Fees Paid</label>
+              <input id="feesPaid" type="number">
+            </div>
+            <div>
+              <label>Fees Due</label>
+              <input id="feesDue" type="number">
+            </div>
+          </div>
+          <label>Date of Birth: </label>
+          <input id="dob" type="date" style="width:200px">
+          <label>Photo</label>
+          <input id="studentPhoto" type="file" accept="image/*">
+          <button type="submit" class="btn">Admit Student (Generate Code)</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- STUDENTS LIST -->
+    <div id="view-students" class="view">
+      <div class="container">
+        <h2>Students</h2>
+        <div class="two-col">
+          <div>
+            <input id="searchStudent" type="text" placeholder="Search by name/code">
+          </div>
+          <div>
+            <select id="filterClass">
+              <option value="">All Classes</option>
+            </select>
+          </div>
+        </div>
+        <div id="studentsList"></div>
+      </div>
+    </div>
+
+    <!-- TEACHERS MANAGEMENT -->
+    <div id="view-teachers" class="view principal-only">
+      <div class="container">
+        <h2>Teachers Management</h2>
+        <h3>Create / Edit Teacher</h3>
+        <form id="teacherCreateForm">
+          <input id="teacherInternalId" type="hidden">
+          <div class="two-col">
+            <div>
+              <label>Teacher Name *</label>
+              <input id="teacherName" type="text" required>
+            </div>
+            <div>
+              <label>ID Card *</label>
+              <input id="teacherIdCard" type="text" required>
+            </div>
+            <div>
+              <label>Classes Taught (comma-separated)</label>
+              <input id="teacherClasses" type="text">
+            </div>
+            <div>
+              <label>Subjects (comma-separated)</label>
+              <input id="teacherSubjects" type="text">
+            </div>
+          </div>
+          <label>Periods (e.g., Math:1-2,English:3-4)</label>
+          <input id="teacherPeriods" type="text">
+          <label>Photo</label>
+          <input id="teacherPhoto" type="file" accept="image/*">
+          <div class="two-col">
+            <button type="submit" class="btn">Save Teacher</button>
+            <button type="button" id="teacherResetBtn" class="btn">New</button>
+          </div>
+        </form>
+        <h3>Existing Teachers</h3>
+        <div id="teachersList"></div>
+      </div>
+    </div>
+
+    <!-- STUDENT/TEACHER PROFILE -->
+    <div id="view-student-profile" class="view">
+      <div class="container">
+        <a href="#" id="backToList">← Back</a>
+        <h2 id="profileName">Student Profile</h2>
+        <div id="profileVisitingCard"></div>
+        <div id="profileInfo"></div>
+        <h3>Today's / Recent Performance</h3>
+        <div id="profileToday"></div>
+        <h3>Monthly Performance</h3>
+        <div id="profileMonthly"></div>
+        <button id="exportPdf" class="btn">Export Profile to PDF</button>
+      </div>
+    </div>
+
+    <!-- FEES MANAGEMENT -->
+    <div id="view-fees" class="view principal-only">
+      <div class="container">
+        <h2>Fees Management</h2>
+        <form id="feeForm">
+          <div class="two-col">
+            <div>
+              <label>Student</label>
+              <select id="feeStudentSelect">
+                <option value="">Select Student</option>
+              </select>
+            </div>
+            <div>
+              <label>Amount</label>
+              <input id="feeAmount" type="number">
+            </div>
+            <div>
+              <label>Date</label>
+              <input id="feeDate" type="date">
+            </div>
+            <div>
+              <label>Status</label>
+              <select id="feePaidStatus">
+                <option value="paid">Paid</option>
+                <option value="unpaid">Unpaid</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn">Add Fee Record</button>
+        </form>
+        <h3>Fees Table</h3>
+        <input id="feeSearch" type="text" placeholder="Search by name/class">
+        <button id="feeReport" class="btn small">Export Fees Report</button>
+        <div id="feesTable"></div>
+      </div>
+    </div>
+
+    <!-- TEACHER PANEL -->
+    <div id="view-teacher" class="view teacher-only">
+      <div class="container">
+        <h2>Teacher Panel</h2>
+        <div class="two-col">
+          <div>
+            <label>Select Class</label>
+            <select id="teacherClassSelect">
+              <option value="">Select Class</option>
+            </select>
+          </div>
+          <div>
+            <label>Select Subject</label>
+            <select id="teacherSubjectSelect">
+              <option value="">Select Subject</option>
+              <option>Math</option>
+              <option>Science</option>
+              <option>English</option>
+              <option>Urdu</option>
+              <option>Social Studies</option>
+              <option>Islamiyat</option>
+              <option>Computer</option>
+              <option>Art</option>
+              <option>Physical Education</option>
+            </select>
+          </div>
+          <div>
+            <label>Date</label>
+            <input id="marksDate" type="date">
+          </div>
+        </div>
+        <button id="loadClassBtn" class="btn">Load Students (for entry)</button>
+        <button id="viewClassConsolidatedBtn" class="btn">View Consolidated Class Performance</button>
+        <button id="exportConsolidatedPdf" class="btn">Export Consolidated PDF</button>
+        <div id="teacherStudentsTable"></div>
+        <button id="saveMarksBtn" class="btn">Save Marks (Bulk)</button>
+        <h3>Consolidated Class Table</h3>
+        <div id="consolidatedClassTable"></div>
+      </div>
+    </div>
+
+    <!-- CLASSES MANAGEMENT -->
+    <div id="view-classes" class="view principal-only">
+      <div class="container">
+        <h2>Manage Classes</h2>
+        <h3>Create / Edit Class</h3>
+        <form id="classCreateForm">
+          <input id="classInternalId" type="hidden">
+          <div class="two-col">
+            <div>
+              <label>Class Name (e.g., 1, 2, KG) *</label>
+              <input id="className" type="text" required>
+            </div>
+            <div>
+              <label>Section (e.g., A, B, i, ii)</label>
+              <input id="classSection" type="text">
+            </div>
+          </div>
+          <div class="two-col">
+            <button type="submit" class="btn">Save Class</button>
+            <button type="button" id="classResetBtn" class="btn">New</button>
+          </div>
+        </form>
+        <h3>Existing Classes</h3>
+        <div id="classesList"></div>
+      </div>
+    </div>
+
+    <!-- SUBJECTS MANAGEMENT -->
+    <div id="view-subjects" class="view principal-only">
+      <div class="container">
+        <h2>Manage Subjects</h2>
+        <h3>Assign Subjects to Class</h3>
+        <form id="subjectAssignForm">
+          <div>
+            <label>Select Class</label>
+            <select id="subjectClassSelect">
+              <option value="">Select Class</option>
+            </select>
+          </div>
+          <div>
+            <label>Subjects (comma-separated, e.g., Math,Science,English)</label>
+            <input id="subjectsList" type="text" placeholder="Math,Science,English">
+          </div>
+          <button type="submit" class="btn">Save Subjects</button>
+        </form>
+        <h3>Class Subjects List</h3>
+        <div id="classSubjectsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>
